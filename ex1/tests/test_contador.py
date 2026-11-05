@@ -29,3 +29,10 @@ def test_maiusculas_contam_como_minusculas():
 
 def test_pontuacao_no_fim():
     assert contar_palavras("fim. Fim!") == {"fim": 2}
+
+def test_pontuacao_nas_duas_bordas():
+    assert contar_palavras(",dia, ;dia;") == {"dia": 2}
+
+
+def test_outros_sinais_nas_bordas():
+    assert contar_palavras(":dia: ?dia?") == {"dia": 2}
