@@ -25,3 +25,30 @@
 - **2º, `"teste"` dá `{"teste": 1}`:** é o primeiro teste que obriga a função a olhar o texto e contar. Ele traz a ideia de contagem com uma única palavra, sem exigir a separação de palavras, que só aparece no 3º teste (`"bom dia"`).
 
 A partir daí a ordem vai do mais simples ao mais exigente: primeiro separar e contar (3 a 7), depois normalizar maiúsculas (8) e por fim tratar a pontuação (9 a 12).
+
+
+### b) Desenvolvimento com TDD
+
+Um commit por fase, seguindo a ordem do item (a): RED só no teste, GREEN só no código, REFACTOR com a suíte verde antes e depois.
+
+**Prints a colar:**
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+![alt text](image-2.png)
+
+Fases:
+
+| Ciclo | Teste | RED? | Código acrescentado |
+|---|---|---|---|
+| 1 | `""` | sim | `return {}` |
+| 2 | `"teste"` | sim | caso de uma palavra |
+| 3 | `"bom dia"` | sim | `split()` e contagem |
+| 4 a 7 | repetida, `\n`, 3 espaços, hífen | não, já passavam | nenhum |
+| 8 | `"Dia dia DIA"` | sim | `lower()` |
+| 9 | `"fim. Fim!"` | sim | `strip(".,;:!?")` |
+| 10 e 11 | sinais nas bordas | não, já passavam | nenhum |
+| 12 | `"... !"` | sim | `if palavra:` |
+| Refactor | - | - | constante `SINAIS` |
