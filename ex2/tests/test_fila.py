@@ -20,3 +20,9 @@ def test_prioritaria_tem_numeracao_propria():
 def test_tipo_invalido_lanca_value_error():
     with pytest.raises(ValueError):
         Fila().emitir("vip")
+
+def test_emitir_aumenta_aguardando():
+    fila = Fila()
+    fila.emitir("normal")
+    fila.emitir("prioritaria")
+    assert fila.aguardando == 2
