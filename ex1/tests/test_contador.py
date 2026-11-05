@@ -36,3 +36,6 @@ def test_pontuacao_nas_duas_bordas():
 
 def test_outros_sinais_nas_bordas():
     assert contar_palavras(":dia: ?dia?") == {"dia": 2}
+    
+def test_so_pontuacao():
+    assert contar_palavras("... !") == {}
