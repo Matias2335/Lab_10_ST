@@ -10,3 +10,9 @@ def test_normais_sao_numeradas_em_sequencia():
     fila = Fila()
     assert fila.emitir("normal") == "N1"
     assert fila.emitir("normal") == "N2"
+def test_prioritaria_tem_numeracao_propria():
+    fila = Fila()
+    assert fila.emitir("normal") == "N1"
+    assert fila.emitir("prioritaria") == "P1"
+    assert fila.emitir("normal") == "N2"
+    assert fila.emitir("prioritaria") == "P2"
