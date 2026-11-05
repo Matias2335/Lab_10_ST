@@ -52,6 +52,7 @@ Fases:
 | 10 e 11 | sinais nas bordas | não, já passavam | nenhum |
 | 12 | `"... !"` | sim | `if palavra:` |
 | Refactor | - | - | constante `SINAIS` |
+| Refactor 2 | - | - | remoção das versões antigas de `contar_palavras` que ficaram no arquivo |
 
 
 ### c) `git log --oneline`
@@ -91,3 +92,25 @@ Eles **ficam na suíte**: não guiaram código novo, mas documentam o contrato e
 | Escore de mutação (MS) | 100% |
 
 Nota: o mutmut 3.8.0 não muta constantes de módulo. Depois do REFACTOR, a string `".,;:!?"` virou a constante `SINAIS` e saiu da análise. Antes do refactor (string dentro de `strip`) eram 13 mutantes e 1 sobrevivia: `strip("XX.,;:!?XX")`, **equivalente**, porque o texto já está em minúsculas e nunca começa nem termina com `X`.
+
+## Exercício 2 - Fila de Atendimento
+
+### a) Lista de testes (escrita antes de codificar)
+
+| # | Teste | Regra verificada |
+|---|---|---|
+| 1 | fila nova tem `aguardando == 0` | estado inicial |
+| 2 | `emitir("normal")` devolve `"N1"` | formato da senha normal |
+| 3 | duas normais devolvem `N1` e `N2` | numeração em sequência |
+| 4 | `N1`, `P1`, `N2`, `P2` | numeração separada por tipo |
+| 5 | `emitir("vip")` lança `ValueError` | tipo inválido |
+| 6 | emitir duas senhas dá `aguardando == 2` | contagem de espera |
+| 7 | `chamar()` em fila vazia lança `IndexError` | fila vazia |
+| 8 | `chamar()` devolve `"N1"` e `aguardando` cai para 0 | chamar remove da espera |
+| 9 | `N1`, `N2` são chamadas nessa ordem | ordem de chegada (normais) |
+| 10 | `N1` e depois `P1`: chama `P1` primeiro | prioritária passa na frente |
+| 11 | `P1`, `P2` são chamadas nessa ordem | ordem de chegada (prioritárias) |
+| 12 | `N1`, `P1`, `P2`, `P3`: chama `P1, P2, N1, P3` | após 2 prioritárias seguidas, chama normal |
+| 13 | `P1`, `P2`, `P3` sem normal: chama `P1, P2, P3` | limite de 2 não vale sem normal esperando |
+| 14 | `N1`, `N2`, `P1` a `P4`: chama `P1, P2, N1, P3, P4, N2` | a contagem zera depois da normal |
+| 15 | após `P1, P2, P3` chamadas, entram `N1` e `P4`: chama `N1` | normal que chega depois do limite passa na frente |
