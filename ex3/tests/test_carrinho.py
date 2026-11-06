@@ -110,3 +110,14 @@ def test_quantidade_menor_que_1_e_rejeitada(quantidade):
 def test_quantidade_nao_inteira_e_rejeitada():
     with pytest.raises(ValueError):
         Carrinho().adicionar(2500, quantidade=1.5)
+
+
+def test_quantidade_1_e_aceita():
+    carrinho = Carrinho()
+    carrinho.adicionar(2500, quantidade=1)
+    assert carrinho.total == 2500
+
+
+def test_quantidade_em_texto_e_rejeitada():
+    with pytest.raises(ValueError):
+        Carrinho().adicionar(2500, quantidade="2")
