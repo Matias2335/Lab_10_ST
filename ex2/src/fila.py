@@ -70,3 +70,9 @@ class Fila:
         if not self._espera["normal"]:
             raise IndexError("fila vazia")
         return self._espera["normal"].pop(0)
+    def chamar(self):
+        if self._espera["prioritaria"]:
+            return self._espera["prioritaria"].pop(0)
+        if self._espera["normal"]:
+            return self._espera["normal"].pop(0)
+        raise IndexError("fila vazia")
