@@ -78,7 +78,11 @@ class Fila:
             self._seguidas += 1
             return self._espera["prioritaria"].pop(0)
         if self._espera["normal"]:
+            if self._espera["normal"]:
+                        self._seguidas = 0
+                        return self._espera["normal"].pop(0)
             return self._espera["normal"].pop(0)
         raise IndexError("fila vazia")
+        
     
     
