@@ -51,6 +51,7 @@ class Fila:
     def __init__(self):
         self._emitidas = {"normal": 0, "prioritaria": 0}
         self._espera = {"normal": [], "prioritaria": []}
+        self._seguidas = 0
 
     def emitir(self, tipo):
         if tipo not in self._emitidas:
@@ -71,7 +72,10 @@ class Fila:
             raise IndexError("fila vazia")
         return self._espera["normal"].pop(0)
     def chamar(self):
-        if self._espera["prioritaria"]:
+        if self._espera["prioritaria"] and not (
+            self._seguidas >= 2 and self._espera["normal"]
+        ):
+            self._seguidas += 1
             return self._espera["prioritaria"].pop(0)
         if self._espera["normal"]:
             return self._espera["normal"].pop(0)
