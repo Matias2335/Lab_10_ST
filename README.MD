@@ -143,6 +143,8 @@ Um commit por fase: RED só no teste, GREEN só no código.
 | 14 | contagem zera | sim | `_seguidas = 0` |
 | 15 | normal depois do limite | não, já passava | nenhum |
 
+| Refactor | - | - | remoção das versões antigas da classe Fila que ficaram no arquivo |
+
 ### c) Testes que obrigaram a contar e a zerar
 
 ![alt text](image-9.png)
