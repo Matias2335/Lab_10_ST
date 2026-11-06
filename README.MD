@@ -176,3 +176,64 @@ Um commit por fase: RED só no teste, GREEN só no código.
 Se o texto das mensagens fizesse parte do contrato, bastaria conferi-las com `match="^tipo invalido$"` e `match="^fila vazia$"`, o que leva a 60/60 (100%).
 
 Observação: `aguardando` é uma `@property`, e o mutmut 3.8.0 não gera mutantes para ela (os 60 são de `__init__`, `emitir` e `chamar`). Os testes dela guiaram o TDD, mas o escore não a avalia.
+
+## Exercício 3 - Carrinho
+
+### a) Testes que contradizem as regras
+
+Ponto de partida: 7 testes passando com o código da teoria (`chore: carrinho e testes atuais`).
+
+| Teste atual | Contradiz? | Motivo |
+|---|---|---|
+| vazio dá 0 | não | |
+| 2500 dá 2500 | não | |
+| `quantidade=2` dá 5000 | não | |
+| preço 0 rejeitado | não | |
+| **cupom em 5000 dá 4500** | **sim** | 5000 está abaixo do mínimo de 10000 do DEZ: deve dar 5000 |
+| `"XYZ"` rejeitado | não | |
+| **1000 após o cupom dá 900** | **sim** | 1000 está abaixo do mínimo: deve dar 1000 |
+
+**O que fazer antes de mudar o código:** atualizar os dois testes para a regra nova. Regra nova muda primeiro o teste: com o valor esperado corrigido, eles falham contra o código antigo, e essa falha é o RED. Não se apagam, porque o cenário continua válido; só o valor esperado mudou.
+
+![alt text](image-13.png)
+
+### b) TDD, uma regra por vez
+
+| Ciclo | Regra | RED? | Código |
+|---|---|---|---|
+| 1 | DEZ só a partir de 10000 | sim (testes atualizados) | `if subtotal < 10000` |
+| 2 | fronteira 9999 / 10000 e cupom antes do item | não, já passava | nenhum |
+| 3 | VINTE: 20% a partir de 30000 | sim | `"VINTE": 20` em `CUPONS` |
+| 4 | VINTE abaixo de 30000 sem desconto | sim | `MINIMOS` e `_minimo` por cupom |
+| 5 | segundo cupom substitui o primeiro | não, já passava | nenhum |
+| 6 | quantidade menor que 1 (0 e -1) | sim | `quantidade < 1` |
+| 7 | quantidade não inteira (1.5) | sim | `isinstance(quantidade, int)` |
+| 8 | quantidade 1 aceita, `"2"` rejeitada | não, já passava | nenhum |
+| Refactor | - | - | `CUPONS` com porcentagem e mínimo |
+
+![alt text](image-16.png)
+
+### c) Refactor e o que mostra que nada mudou
+
+`MINIMOS` foi eliminado e `CUPONS` passou a guardar `(porcentagem, mínimo)` por código; `aplicar_cupom` faz `self._desconto, self._minimo = CUPONS[codigo]`.
+
+O que mostra que nada mudou:
+- Os mesmos 20 testes passam antes e depois do refactor (verde, verde).
+- O commit `REFACTOR:` altera apenas `src/carrinho.py`, nenhum teste (`git show --stat`).
+
+![alt text](image-14.png)
+
+![alt text](image-15.png)
+
+### d) Valores de quantidade testados
+
+| Valor | Resultado | Por que foi testado |
+|---|---|---|
+| 0 | `ValueError` | fronteira inferior: logo abaixo do mínimo |
+| -1 | `ValueError` | quantidade negativa |
+| 1 | aceita | fronteira: o menor valor válido |
+| 1.5 | `ValueError` | maior que 1, mas não inteiro: só o teste de tipo o rejeita |
+| `"2"` | `ValueError` | texto numérico; sem a checagem de tipo daria `TypeError`, e a regra exige `ValueError` |
+| 2 | aceita (total 5000) | valor típico, teste herdado da base |
+
+Os valores 0 e 1 cobrem os dois lados da fronteira do "ao menos 1", e 1.5 e `"2"` cobrem a condição "inteira", que a comparação numérica sozinha não pega.
