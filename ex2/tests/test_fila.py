@@ -59,3 +59,9 @@ def test_apos_duas_prioritarias_chama_normal_se_houver():
     for _ in range(3):
         fila.emitir("prioritaria")
     assert [fila.chamar() for _ in range(4)] == ["P1", "P2", "N1", "P3"]
+    
+def test_limite_de_duas_nao_vale_sem_normal_esperando():
+    fila = Fila()
+    for _ in range(3):
+        fila.emitir("prioritaria")
+    assert [fila.chamar() for _ in range(3)] == ["P1", "P2", "P3"]
