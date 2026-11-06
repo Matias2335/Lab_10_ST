@@ -35,3 +35,9 @@ def test_chamar_devolve_a_senha_e_reduz_aguardando():
     fila.emitir("normal")
     assert fila.chamar() == "N1"
     assert fila.aguardando == 0
+def test_normais_sao_chamadas_na_ordem_de_chegada():
+    fila = Fila()
+    fila.emitir("normal")
+    fila.emitir("normal")
+    assert fila.chamar() == "N1"
+    assert fila.chamar() == "N2"
