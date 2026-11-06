@@ -23,11 +23,11 @@ def test_preco_zero_e_rejeitado():
         Carrinho().adicionar(0)
 
 
-def test_cupom_dez_em_5000_da_4500():
+def test_cupom_dez_abaixo_do_minimo_nao_desconta():
     carrinho = Carrinho()
     carrinho.adicionar(5000)
     carrinho.aplicar_cupom("DEZ")
-    assert carrinho.total == 4500
+    assert carrinho.total == 5000
 
 
 def test_cupom_desconhecido_e_rejeitado():
@@ -35,8 +35,8 @@ def test_cupom_desconhecido_e_rejeitado():
         Carrinho().aplicar_cupom("XYZ")
 
 
-def test_cupom_aplicado_antes_do_item():
+def test_cupom_aplicado_antes_do_item_abaixo_do_minimo():
     carrinho = Carrinho()
     carrinho.aplicar_cupom("DEZ")
     carrinho.adicionar(1000)
-    assert carrinho.total == 900
+    assert carrinho.total == 1000
