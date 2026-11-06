@@ -53,3 +53,9 @@ def test_prioritarias_sao_chamadas_na_ordem_de_chegada():
     fila.emitir("prioritaria")
     assert fila.chamar() == "P1"
     assert fila.chamar() == "P2"
+def test_apos_duas_prioritarias_chama_normal_se_houver():
+    fila = Fila()
+    fila.emitir("normal")
+    for _ in range(3):
+        fila.emitir("prioritaria")
+    assert [fila.chamar() for _ in range(4)] == ["P1", "P2", "N1", "P3"]
