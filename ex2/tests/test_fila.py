@@ -30,3 +30,8 @@ def test_emitir_aumenta_aguardando():
 def test_chamar_fila_vazia_lanca_index_error():
     with pytest.raises(IndexError):
         Fila().chamar()
+def test_chamar_devolve_a_senha_e_reduz_aguardando():
+    fila = Fila()
+    fila.emitir("normal")
+    assert fila.chamar() == "N1"
+    assert fila.aguardando == 0
