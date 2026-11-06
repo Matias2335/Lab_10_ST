@@ -99,3 +99,9 @@ def test_segundo_cupom_com_minimo_maior_nao_desconta_abaixo_dele():
     carrinho.aplicar_cupom("DEZ")
     carrinho.aplicar_cupom("VINTE")
     assert carrinho.total == 20000
+
+
+@pytest.mark.parametrize("quantidade", [0, -1])
+def test_quantidade_menor_que_1_e_rejeitada(quantidade):
+    with pytest.raises(ValueError):
+        Carrinho().adicionar(2500, quantidade=quantidade)
