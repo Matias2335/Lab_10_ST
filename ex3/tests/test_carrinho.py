@@ -75,3 +75,27 @@ def test_cupom_vinte_abaixo_de_30000_nao_desconta():
     carrinho.adicionar(29999)
     carrinho.aplicar_cupom("VINTE")
     assert carrinho.total == 29999
+
+
+def test_segundo_cupom_substitui_o_primeiro():
+    carrinho = Carrinho()
+    carrinho.adicionar(30000)
+    carrinho.aplicar_cupom("DEZ")
+    carrinho.aplicar_cupom("VINTE")
+    assert carrinho.total == 24000
+
+
+def test_dez_depois_de_vinte_substitui_o_vinte():
+    carrinho = Carrinho()
+    carrinho.adicionar(30000)
+    carrinho.aplicar_cupom("VINTE")
+    carrinho.aplicar_cupom("DEZ")
+    assert carrinho.total == 27000
+
+
+def test_segundo_cupom_com_minimo_maior_nao_desconta_abaixo_dele():
+    carrinho = Carrinho()
+    carrinho.adicionar(20000)
+    carrinho.aplicar_cupom("DEZ")
+    carrinho.aplicar_cupom("VINTE")
+    assert carrinho.total == 20000
