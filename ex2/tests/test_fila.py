@@ -47,3 +47,9 @@ def test_prioritaria_passa_na_frente():
     fila.emitir("prioritaria")
     assert fila.chamar() == "P1"
     assert fila.chamar() == "N1"
+def test_prioritarias_sao_chamadas_na_ordem_de_chegada():
+    fila = Fila()
+    fila.emitir("prioritaria")
+    fila.emitir("prioritaria")
+    assert fila.chamar() == "P1"
+    assert fila.chamar() == "P2"
