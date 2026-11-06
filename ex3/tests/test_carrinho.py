@@ -61,3 +61,10 @@ def test_cupom_aplicado_antes_vale_quando_subtotal_chega_ao_minimo():
     carrinho.aplicar_cupom("DEZ")
     carrinho.adicionar(10000)
     assert carrinho.total == 9000
+
+
+def test_cupom_vinte_vale_a_partir_de_30000():
+    carrinho = Carrinho()
+    carrinho.adicionar(30000)
+    carrinho.aplicar_cupom("VINTE")
+    assert carrinho.total == 24000
