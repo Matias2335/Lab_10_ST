@@ -80,3 +80,5 @@ class Fila:
         if self._espera["normal"]:
             return self._espera["normal"].pop(0)
         raise IndexError("fila vazia")
+    
+    
