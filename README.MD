@@ -114,3 +114,63 @@ Nota: o mutmut 3.8.0 não muta constantes de módulo. Depois do REFACTOR, a stri
 | 13 | `P1`, `P2`, `P3` sem normal: chama `P1, P2, P3` | limite de 2 não vale sem normal esperando |
 | 14 | `N1`, `N2`, `P1` a `P4`: chama `P1, P2, N1, P3, P4, N2` | a contagem zera depois da normal |
 | 15 | após `P1, P2, P3` chamadas, entram `N1` e `P4`: chama `N1` | normal que chega depois do limite passa na frente |
+
+### b) Desenvolvimento com TDD
+
+Um commit por fase: RED só no teste, GREEN só no código.
+
+![alt text](image-8.png)
+
+![alt text](image-7.png)
+
+![alt text](image-6.png)
+
+| Ciclo | Teste | RED? | Código acrescentado |
+|---|---|---|---|
+| 1 | fila nova | sim | `aguardando` devolve 0 |
+| 2 | `N1` | sim | `emitir` devolve `"N1"` |
+| 3 | `N1`, `N2` | sim | contador de emitidas |
+| 4 | numeração por tipo | sim | contador e prefixo por tipo |
+| 5 | tipo inválido | sim | `ValueError` |
+| 6 | `aguardando` | sim | listas de espera |
+| 7 | `chamar` vazia | sim | `IndexError` |
+| 8 | `chamar` devolve a senha | sim | `pop(0)` da normal |
+| 9 | normais em ordem | não, já passava | nenhum |
+| 10 | prioritária na frente | sim | `chamar` prioriza |
+| 11 | prioritárias em ordem | não, já passava | nenhum |
+| 12 | 2 seguidas, depois normal | sim | contador `_seguidas` |
+| 13 | limite sem normal | não, já passava | nenhum |
+| 14 | contagem zera | sim | `_seguidas = 0` |
+| 15 | normal depois do limite | não, já passava | nenhum |
+
+### c) Testes que obrigaram a contar e a zerar
+
+![alt text](image-9.png)
+
+- **Contar as prioritárias seguidas:** `test_apos_duas_prioritarias_chama_normal_se_houver` (`N1, P1, P2, P3` deve sair `P1, P2, N1, P3`). Só uma implementação que lembra quantas prioritárias saíram em sequência passa nesse teste.
+- **Zerar a contagem:** `test_contagem_de_prioritarias_zera_apos_chamar_normal` (`N1, N2, P1 a P4` deve sair `P1, P2, N1, P3, P4, N2`). Sem zerar, o contador continua em 2 depois da `N1`, e a `N2` sairia antes da `P3` (`P1, P2, N1, N2, P3, P4`).
+
+### d) Limite de 2 sem normal esperando
+
+`test_limite_de_duas_nao_vale_sem_normal_esperando`: com `P1, P2, P3` e nenhuma normal na fila, a ordem é `P1, P2, P3`. A terceira prioritária sai mesmo com o contador em 2, porque a regra só manda chamar normal "se houver normal esperando". Esse teste passou de primeira, pois a condição `and self._espera["normal"]` já era exigida pelo teste do ciclo 12.
+
+### e) Cobertura e mutação
+
+![alt text](image-10.png)
+
+![alt text](image-11.png)
+
+![alt text](image-12.png)
+
+| Medida | Resultado |
+|---|---|
+| Testes | 15 passando |
+| Cobertura de comandos e ramos | 100% |
+| Mutantes gerados / mortos / vivos | 60 / 54 / 6 |
+| Escore de mutação (MS) | 54/60 = 90% |
+
+**Os vivos indicam comportamento da especificação sem teste? Não.** Os 6 são mutações do **texto** das mensagens de `ValueError("tipo invalido")` e `IndexError("fila vazia")` (`None`, `"XX...XX"`, maiúsculas). A especificação define só o **tipo** das exceções, e não as mensagens, e os testes conferem o tipo. Todas as regras (numeração, prioridade, limite de 2 e zeramento) têm mutantes mortos.
+
+Se o texto das mensagens fizesse parte do contrato, bastaria conferi-las com `match="^tipo invalido$"` e `match="^fila vazia$"`, o que leva a 60/60 (100%).
+
+Observação: `aguardando` é uma `@property`, e o mutmut 3.8.0 não gera mutantes para ela (os 60 são de `__init__`, `emitir` e `chamar`). Os testes dela guiaram o TDD, mas o escore não a avalia.

@@ -73,3 +73,11 @@ def test_contagem_de_prioritarias_zera_apos_chamar_normal():
             fila.emitir("prioritaria")
         esperado = ["P1", "P2", "N1", "P3", "P4", "N2"]
         assert [fila.chamar() for _ in range(6)] == esperado
+def test_normal_que_chega_depois_do_limite_e_chamada_antes_da_proxima_prioritaria():
+    fila = Fila()
+    for _ in range(3):
+        fila.emitir("prioritaria")
+    assert [fila.chamar() for _ in range(3)] == ["P1", "P2", "P3"]
+    fila.emitir("normal")
+    fila.emitir("prioritaria")
+    assert fila.chamar() == "N1"
